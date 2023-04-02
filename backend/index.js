@@ -59,7 +59,13 @@ app.get('/current_status', (req, res) => {
 
 app.post('/current_status', (req, res) => {
     var req_datetime =  moment().format("YYYY-MM-DD HH:mm:ss")
+    const date_found = new Date(req_datetime)
+    var dayOfWeek = date_found.getDay()
+    var currTime = moment().format("HH:mm:ss")
+
     console.log("DATETIME: " + req_datetime)
+    console.log("DAY OF WEEK: " + dayOfWeek + ", TIME TODAY: " + currTime)
+
 
     console.log("BODY OF POST REQUEST: ", JSON.stringify(req.body))
 
@@ -94,23 +100,23 @@ app.post('/current_status', (req, res) => {
             }
         }
     )
+
+    console.log("Success Or Failure : " + success)
     
     if(success)
     {
+        var valueToAdd = req.body["is_present"] ? 1 : 0
+
         db.query(
 
-            "INSERT INTO user_detected(time_stamp, is_present) VALUES(?,?)",
-            [req_datetime, req.body["is_present"]],
+            "UPDATE data_analysis SET present_freq = present_freq + ? , total_freq = total_freq + 1 WHERE week_day = ? AND ? >= time_slot AND ? < time_slot_end;",
+            [valueToAdd, dayOfWeek, currTime, currTime],
             
             (err, result) => {
                 if(err)
                 {
                     success = false
                     console.log("Error in inserting Record.\nERROR: " + err)
-                    res.send({
-                        erorr: err,
-                        message: "Values couldn't be inserted into the Database. Try Again."
-                    })
                 }
                 else
                 {
@@ -124,6 +130,12 @@ app.post('/current_status', (req, res) => {
     {
         res.status(200).send({
             message: "All The Values successfully updated in the Database."
+        })
+    }
+    else
+    {
+        res.send({
+            message: "Values couldn't be inserted into the Database. Try Again."
         })
     }
 })
@@ -161,3 +173,4 @@ app.get("/ble_mac", (req, res) => {
         }
     )
 })
+
