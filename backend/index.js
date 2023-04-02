@@ -4,10 +4,18 @@ const env = process.env
 const express = require("express");
 const mysql = require("mysql")
 const app = express()
+const cors = require("cors");
 
 const body_parser = require('body-parser')
 app.use(body_parser.urlencoded({ extended: true }))
 app.use(body_parser.json());
+app.use(
+    cors({
+        origin: ["http://localhost:3000"],
+        method: ["GET", "POST"],
+        credentials: true,
+    })
+)
 
 const cjson = require('circular-json') // for debugging purposes
 
@@ -51,6 +59,30 @@ app.get('/current_status', (req, res) => {
                 res.status(200).send({
                     is_present: result[0]['is_present'],
                     message: "Request executed successfully."
+                })
+            }
+        }
+    )
+})
+
+app.post('/update_mac_list', (req, res) => {
+    console.log("Received device identity: "  + req.body.entered_id)
+    db.query(
+        "INSERT INTO ble_mac_addresses(mac_address) values(?);",
+        req.body.entered_id,
+        (err, result) => {
+            if(err)
+            {
+                console.log("Error occurred in insertion into DB. ERROR: " + err)
+                res.send({
+                    message: "Error in inserting value into DB."
+                })
+            }
+            else
+            {
+                console.log("Identity entered into DB successfully. RESULT: "+ result)
+                res.status(200).send({
+                    message: "Successfully updated the DB by inserting new value."
                 })
             }
         }
