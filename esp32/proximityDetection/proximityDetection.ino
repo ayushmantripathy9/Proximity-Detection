@@ -14,10 +14,10 @@ String ble_mac_addresses = "ble_mac";
 
 const char* UBIDOTS_TOKEN = "BBFF-0mYAG51tYbnT7cBHyyCCieFnzBcN8A";  // Put here your Ubidots TOKEN
 const char* WIFI_SSID = "iPhone-Ayushman";                          // Put here your Wi-Fi SSID
+const char* WIFI_PASS = "wifilelo123";                              // Put here your Wi-Fi password
 
 // Ubidots
 #include <Ubidots.h>
-const char* WIFI_PASS = "wifilelo123";                              // Put here your Wi-Fi password
 Ubidots ubidots(UBIDOTS_TOKEN, UBI_HTTP);
 
 
@@ -231,7 +231,7 @@ void loop() {
   ubidots.add("deviceDetected", anyDeviceInRange);
   ubidots.add("deviceId", deviceId);
 
-  Serial.println(F("Sending values to Ubidots..."));   //  comment this later
+  Serial.println(F("Sending values to Ubidots..."));   
  
   
   bool bufferSent = false;
@@ -250,7 +250,7 @@ void loop() {
     Serial.println("Values couldn't be sent to Ubidots.");   
   }
 
-  Serial.println(F("Sending values to Backend..."));   //  comment this later
+  Serial.println(F("Sending values to Backend..."));
 
   bool sentToBackend = false;
   
@@ -259,12 +259,12 @@ void loop() {
   if(sentToBackend)
   {
     //  SET LED COLOR TO GREEN  //
-    Serial.println(F("Values sent to Backend Successfully."));   //   comment this later
+    Serial.println(F("Values sent to Backend Successfully."));
   }
   else
   {
     //  SET LED COLOR TO RED  //
-    Serial.println(F("Values couldn't be sent to Backend."));   //   comment this later
+    Serial.println(F("Values couldn't be sent to Backend."));   
   }
   
   bleDeviceScanner->clearResults();
