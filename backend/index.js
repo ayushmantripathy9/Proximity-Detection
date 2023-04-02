@@ -206,3 +206,32 @@ app.get("/ble_mac", (req, res) => {
     )
 })
 
+
+const data_analysis = []
+app.get('/data_analysis', (req, res) => {
+    var temp_array = []
+    var req_success = true
+
+    db.query(
+        "SELECT * FROM data_analysis",
+        (err, result) => 
+        {
+            if(err)
+            {
+                console.log("ERROR : "  + err)
+                res.send({
+                    error: err
+                })
+            }
+            else
+            {
+                res.status(200).send(
+                    {
+                        query_res: result
+                    }
+                )
+            }
+        }
+    )
+
+})
