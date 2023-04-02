@@ -20,7 +20,7 @@ function Status() {
 
     return (
         <div>
-        <h1>Welcome to my Device Status Page!</h1>
+        <h2>Welcome to Device Status Page!</h2>
         The Current Status of the Device is {data.is_present ? `PRESENT` : `ABSENT`}
         <br /><br />
         {data.is_present ? <BigButton color='green'/> : <BigButton color='red'/>}

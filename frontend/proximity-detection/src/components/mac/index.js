@@ -12,7 +12,7 @@ function Mac() {
 
   return (
     <div>
-      <h1>Welcome to my MAC Addresses Page!</h1>
+      <h2>Welcome to Monitored Devices Page!</h2>
       {<UserInput onSubmit={handleChildSubmit}/>}
       <br />
 

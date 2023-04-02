@@ -12,9 +12,9 @@ function TableComponent() {
     axios.get(dataAnalysisURL)
       .then(response => {
         let data = response.data.query_res
-
         let data_analysis = []
         let temp_array = []
+
         for (let hours = 0; hours <= 23; hours++) {
             for (let minutes = 0; minutes < 60; minutes += 15) {
                 let ts = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
@@ -25,7 +25,8 @@ function TableComponent() {
                     {
                         if(data[i]["total_freq"] !== 0)
                         {
-                            temp_array.push(data[i]["present_freq"]/ data[i]["total_freq"])
+                            var val = data[i]["present_freq"]/ data[i]["total_freq"]
+                            temp_array.push(parseFloat(val.toFixed(2)))
                             console.log("DATA FOUND: " + data[i]["present_freq"]/ data[i]["total_freq"])
                         }   
 
@@ -46,7 +47,7 @@ function TableComponent() {
       });
   }, []);
 
-  const daysOfWeek = ['Time Slots', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const daysOfWeek = ['Slots', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   return (
     <table>
@@ -58,9 +59,31 @@ function TableComponent() {
       <tbody>
         {data_anal.map((row, index) => (
           <tr key={index}>
-            {row.map((item, index) => (
-              <td key={index}><button>{`${item}`}</button></td>
-            ))}
+            {row.map((item, index) => {
+              if(item === "N/A")
+              {
+                return(<td key={index}><button >{`${item}`}</button></td>)
+              }
+              else if(item > 0.75)
+              {
+                return(<td key={index}><button style={{backgroundColor:"green"}}>{`${item}`}</button></td>)
+
+              }
+              else if(item > 0.25)
+              {
+                return(<td key={index}><button style={{backgroundColor:"yellow"}}>{`${item}`}</button></td>)
+
+              }
+              else if(item >= 0)
+              {
+                return(<td key={index}><button style={{backgroundColor:"red"}}>{`${item}`}</button></td>)
+              }
+              else
+              {
+                return(<td key={index}><button style={{backgroundColor:"#282828", color:"white"}}>{`${item}`}</button></td>)
+
+              }
+            })}
           </tr>
         ))}
       </tbody>

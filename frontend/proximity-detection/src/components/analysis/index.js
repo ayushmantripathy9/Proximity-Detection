@@ -1,13 +1,20 @@
 import React from 'react';
 import TableComponent from './table_component';
 
+let containerStyle = {
+  width: '100vw',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+}
+
 function Analysis() {
   return (
     <div>
-      <h1>Welcome to my Data Analysis!</h1>
-      <p>Data Analysis coming up soon ......</p>
-
-      {<TableComponent />}
+      <h2>Welcome to Data Analysis Page!</h2>
+      <div style={containerStyle}>
+        <TableComponent />
+      </div>
     </div>
   );
 }
