@@ -47,7 +47,7 @@ app.get('/current_status', (req, res) => {
         (err, result) => {
             if(err)
             {
-                console.log("Values couldn't be read from the Database.\nERROR: " + err)
+                console.log("Values couldn't be read from the Database.")
                 res.send({
                     error: err,
                     message: "Request couldn't be granted."
@@ -73,14 +73,14 @@ app.post('/update_mac_list', (req, res) => {
         (err, result) => {
             if(err)
             {
-                console.log("Error occurred in insertion into DB. ERROR: " + err)
+                console.log("Error occurred in insertion into DB.")
                 res.send({
                     message: "Error in inserting value into DB."
                 })
             }
             else
             {
-                console.log("Identity entered into DB successfully. RESULT: "+ result)
+                console.log("Identity entered into DB successfully.")
                 res.status(200).send({
                     message: "Successfully updated the DB by inserting new value."
                 })
@@ -95,18 +95,13 @@ app.post('/current_status', (req, res) => {
     var dayOfWeek = date_found.getDay()
     var currTime = moment().format("HH:mm:ss")
 
-    console.log("DATETIME: " + req_datetime)
-    console.log("DAY OF WEEK: " + dayOfWeek + ", TIME TODAY: " + currTime)
-
-
-    console.log("BODY OF POST REQUEST: ", JSON.stringify(req.body))
-
     console.log("Received POST Request for current status.\nPAYLOAD -> is_present: " + req.body["is_present"] + ", n_devices_found: " + req.body["n_devices_found"])
-    console.log("ARRAY OF DEVICES: " + req.body["devices_found"])
-    
+    console.log("Indices of the Devices Found: " + req.body["devices_found"])
+
+    // console.log("DATETIME: " + req_datetime)
+    // console.log("DAY OF WEEK: " + dayOfWeek + ", TIME TODAY: " + currTime)
+    // console.log("BODY OF POST REQUEST: ", JSON.stringify(req.body))    
     // const received_req = cjson.stringify(req)                // for debugging purposes
-    // console.log("RECEIVED REQUEST: " + received_req) 
-    // res.status(200).send({})
 
     var success = true
 
@@ -119,7 +114,7 @@ app.post('/current_status', (req, res) => {
             if(err)
             {
                 success = false
-                console.log("Error in updating the current value of is_present.\nERROR: " + err)
+                console.log("Error in updating the current value of is_present.")
                 res.send({
                     erorr: err,
                     message: "Values couldn't be updated in the Database. Try Again."
@@ -128,12 +123,10 @@ app.post('/current_status', (req, res) => {
             }
             else
             {
-                console.log("Value of Current Status successfully updated in the Database. Request Successful.\nRESULT: " + result)
+                console.log("Value of Current Status successfully updated in the Database. Request Successful.")
             }
         }
     )
-
-    console.log("Success Or Failure : " + success)
     
     if(success)
     {
@@ -148,11 +141,11 @@ app.post('/current_status', (req, res) => {
                 if(err)
                 {
                     success = false
-                    console.log("Error in inserting Record.\nERROR: " + err)
+                    console.log("Error in inserting Record.")
                 }
                 else
                 {
-                    console.log("Value of Record successfully inserted in the Database. Request Successful.\nRESULT: " + result)
+                    console.log("Value of Record successfully inserted in the Database. Request Successful.")
                 }
             }
         )
@@ -181,7 +174,7 @@ app.get("/ble_mac", (req, res) => {
         (err, result) => {
             if(err)
             {
-                console.log("Values couldn't be read from the Database.\nERROR: " + err)
+                console.log("Values couldn't be read from the Database.")
                 res.send({
                     error: err,
                     message: "Request couldn't be granted."
@@ -189,7 +182,7 @@ app.get("/ble_mac", (req, res) => {
             }
             else
             {
-                console.log("Values obtained from the Database successfully.\nRESULT: Devices Under Observation: " + result)
+                console.log("Values of Devices Under Observation obtained from the Database successfully.")
                 var devicesOfInterest = [];
                 for(let i = 0 ; i < result.length ; ++i)
                 {
@@ -218,13 +211,14 @@ app.get('/data_analysis', (req, res) => {
         {
             if(err)
             {
-                console.log("ERROR : "  + err)
+                console.log("Error Occurred.")
                 res.send({
                     error: err
                 })
             }
             else
             {
+                console.log("Successfully fetched data for analysis")
                 res.status(200).send(
                     {
                         query_res: result
