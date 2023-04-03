@@ -7,6 +7,11 @@
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 
+//LEDs
+int blue = 5;
+int green = 6;
+int red = 7;
+
 HTTPClient http;
 String server = "http://172.20.10.2:7005/";
 String current_status = "current_status";
@@ -44,16 +49,16 @@ void getMonitoredDevices()
 
   http.end();
 
-  Serial.print("GET DEVICES PAYLOAD: ");
-  Serial.println(payload);
+  // Serial.print("GET DEVICES PAYLOAD: ");
+  // Serial.println(payload);
 
   StaticJsonDocument<400> doc;
   DeserializationError error = deserializeJson(doc, payload);
 
   // Test if parsing succeeds.
   if (error) {
-    Serial.print(F("deserializeJson() failed: "));
-    Serial.println(error.f_str());
+    // Serial.print(F("deserializeJson() failed: "));
+    // Serial.println(error.f_str());
     return;
   }
 
@@ -102,14 +107,14 @@ bool sendDeviceStatus(bool deviceInRange)
 
   if(responseCode > 0)
   {
-    Serial.print("POST Request Successful. Code: ");
-    Serial.println(responseCode);
+    // Serial.print("POST Request Successful. Code: ");
+    // Serial.println(responseCode);
     return 1;
   }
   else
   {
-    Serial.print("Error in POST Request: ");
-    Serial.println(responseCode);
+    // Serial.print("Error in POST Request: ");
+    // Serial.println(responseCode);
     return 0;
   }
 
@@ -187,7 +192,9 @@ void setup() {
   }
 
   //  DEFINE LED PIN  //
-  //  SET LED COLOR TO GREEN  //
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(blue, OUTPUT);
 
   Serial.println("Scanning for BLE Devices...");
 
@@ -216,8 +223,6 @@ void loop() {
   }
 
   nDevicesFound = 0;
-
-  //  SET LED COLOR TO GREEN  //
 
   bool anyDeviceInRange = false;
   int deviceId = -1;
@@ -260,43 +265,44 @@ void loop() {
   Serial.println(F("Sending values to Backend..."));
 
   bool sentToBackend = false;
-  
+  digitalWrite(blue, HIGH);
   sentToBackend = sendDeviceStatus(anyDeviceInRange);
   
   if(sentToBackend)
   {
-    //  SET LED COLOR TO GREEN  //
     Serial.println(F("Values sent to Backend Successfully."));
   }
   else
   {
-    //  SET LED COLOR TO RED  //
     Serial.println(F("Values couldn't be sent to Backend."));   
   }
+
+  digitalWrite(blue, LOW);
 
   bool currentDeviceStatus = getCommonDeviceStatus();
   ubidots.add("deviceDetected", currentDeviceStatus);
   ubidots.add("deviceId", deviceId);
 
+  delay(200);
   Serial.println(F("Sending values to Ubidots..."));   
- 
-  
+
   bool bufferSent = false;
+  digitalWrite(red, HIGH);
   
-  //  SET LED COLOR TO YELLOW   //
   bufferSent = ubidots.send();
 
   if(bufferSent)
   {
-    //  SET LED COLOR TO BLUE  //
     Serial.println("Values sent to Ubidots successfully.");
   }
   else
   {
-    //  SET LED COLOR TO WHITE  //
     Serial.println("Values couldn't be sent to Ubidots.");   
   }
+
+  digitalWrite(red, LOW);
   
+
   bleDeviceScanner->clearResults();
   delay(2000);
 }
