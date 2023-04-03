@@ -116,6 +116,35 @@ bool sendDeviceStatus(bool deviceInRange)
   http.end();
 }
 
+bool getCommonDeviceStatus()
+{
+  String getURL = server + current_status;
+  http.begin(getURL.c_str());
+
+  int responseCode = http.GET();
+  String payload = http.getString();
+
+  http.end();
+
+  Serial.print("GET STATUS PAYLOAD: ");
+  Serial.println(payload);
+
+  StaticJsonDocument<400> doc;
+  DeserializationError error = deserializeJson(doc, payload);
+
+  // Test if parsing succeeds.
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return 0;
+  }
+
+  Serial.print("Device Status Received: ");
+  bool value = doc["is_present"];
+  Serial.println(value);
+  return value;
+}
+
 int deviceRSSI; // temp variable for checking RSSI
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks{
   void onResult(BLEAdvertisedDevice advertisedDevice)
@@ -228,7 +257,25 @@ void loop() {
     Serial.println(F("No device of interest was in range."));
   }
 
-  ubidots.add("deviceDetected", anyDeviceInRange);
+  Serial.println(F("Sending values to Backend..."));
+
+  bool sentToBackend = false;
+  
+  sentToBackend = sendDeviceStatus(anyDeviceInRange);
+  
+  if(sentToBackend)
+  {
+    //  SET LED COLOR TO GREEN  //
+    Serial.println(F("Values sent to Backend Successfully."));
+  }
+  else
+  {
+    //  SET LED COLOR TO RED  //
+    Serial.println(F("Values couldn't be sent to Backend."));   
+  }
+
+  bool currentDeviceStatus = getCommonDeviceStatus();
+  ubidots.add("deviceDetected", currentDeviceStatus);
   ubidots.add("deviceId", deviceId);
 
   Serial.println(F("Sending values to Ubidots..."));   
@@ -248,23 +295,6 @@ void loop() {
   {
     //  SET LED COLOR TO WHITE  //
     Serial.println("Values couldn't be sent to Ubidots.");   
-  }
-
-  Serial.println(F("Sending values to Backend..."));
-
-  bool sentToBackend = false;
-  
-  sentToBackend = sendDeviceStatus(anyDeviceInRange);
-  
-  if(sentToBackend)
-  {
-    //  SET LED COLOR TO GREEN  //
-    Serial.println(F("Values sent to Backend Successfully."));
-  }
-  else
-  {
-    //  SET LED COLOR TO RED  //
-    Serial.println(F("Values couldn't be sent to Backend."));   
   }
   
   bleDeviceScanner->clearResults();
