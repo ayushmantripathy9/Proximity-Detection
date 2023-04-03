@@ -104,29 +104,56 @@ app.post('/current_status', (req, res) => {
     // const received_req = cjson.stringify(req)                // for debugging purposes
 
     var success = true
+    if(req.body["is_present"])
+    {
+        db.query(
 
-    db.query(
+            "UPDATE user_detected SET is_present=?, last_updated=?;",
+            [req.body["is_present"], req_datetime], 
 
-        "UPDATE user_detected SET is_present=? WHERE time_stamp='2001-01-01 00:00:00'",
-        req.body["is_present"], 
+            (err, result) => {
+                if(err)
+                {
+                    success = false
+                    console.log("Error in updating the current value of is_present.")
+                    res.send({
+                        erorr: err,
+                        message: "Values couldn't be updated in the Database. Try Again."
+                    })
 
-        (err, result) => {
-            if(err)
-            {
-                success = false
-                console.log("Error in updating the current value of is_present.")
-                res.send({
-                    erorr: err,
-                    message: "Values couldn't be updated in the Database. Try Again."
-                })
-
+                }
+                else
+                {
+                    console.log("Value of Current Status successfully updated in the Database. Request Successful.")
+                }
             }
-            else
-            {
-                console.log("Value of Current Status successfully updated in the Database. Request Successful.")
+        )
+    }
+    else
+    {
+        db.query(
+
+            "UPDATE user_detected SET is_present=?, last_updated=? WHERE is_present=true AND last_updated NOT BETWEEN NOW() - INTERVAL 20 SECOND AND NOW();",
+            [req.body["is_present"], req_datetime], 
+
+            (err, result) => {
+                if(err)
+                {
+                    success = false
+                    console.log("Error in updating the current value of is_present.")
+                    res.send({
+                        erorr: err,
+                        message: "Values couldn't be updated in the Database. Try Again."
+                    })
+
+                }
+                else
+                {
+                    console.log("Value of Current Status successfully updated in the Database. Request Successful.")
+                }
             }
-        }
-    )
+        )      
+    }
     
     if(success)
     {
