@@ -84,3 +84,49 @@ The following are the POST request endpoints:
 
 The following images depict the frontend:
 
+#### DEVICE STATUS PAGE
+<p>
+The image on the left shows any device of interest in range and the one in the right shows the state when no device of interest is in range. 
+</p>
+
+<br>
+
+<table>
+    <tr>
+        <td> <img align="left" width="100%" height="100%" src="images/device_status_in.png"> </td>
+        <td> <img align="right" width="100%" height="100%" src="images/device_status_out.png">  </td>
+    </tr>
+</table>
+
+
+
+
+
+<br>
+
+#### MONITORED DEVICES PAGE
+<p>
+In this page, the user can enter the Identity (Name of Device or the BLE MAC Address) of the Device that is to be monitored. It also shows the list of devices that are currently being monitored by our ESP32 modules.
+</p>
+
+<br>
+
+<p align="center"> 
+    <img align="center" width="90%" height="30%" src="images/monitored_devices.png">
+</p>
+
+
+### DATA ANALYSIS PAGE
+
+<p>
+In this page, we show the Data Analysis of the device presence data as collected by the ESP32 devices and stored in the Database. The week is divided into weekdays and each day has 15 min time-intervals. The number corresponding to the time-slot in the day represents the degree of presence of the device in that time-stamp. As you can see that colored indicators represent the degree of presence (green for greater than 75%, yellow for between 25% and 75%, and red for less than 25%).
+</p>
+
+<br>
+
+<table>
+    <tr>
+        <td> <img align="left" width="100%" height="100%" src="images/data_analysis_1.png"> </td>
+        <td> <img align="right" width="100%" height="100%" src="images/data_analysis_2.png">  </td>
+    </tr>
+</table>
