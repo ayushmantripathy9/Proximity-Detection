@@ -33,3 +33,40 @@ The main aim of our project is to perform Proximity Detection using the BLE via 
     - *ReactJS* for developing the Frontend
     - *NodeJS* for developing the Backend
     - *MySQL Database* for storing the data
+
+
+## Working
+The section below represents a workflow of the Project:
+
+### **ESP32**
+
+1. The ESP32 device first connects to the WiFi using the specified SSID and Password.
+2. The initialization of the BLE Scanner is done and the scan parameters are set.
+3. We override a callback function, named `BLEAdvertisedDeviceCallbacks()` of the class `MyAdvertisedDeviceCallbacks` where we put in the code for detection of the Smart Device. 
+    - This callback function gets called, everytime a new device is detected by the ESP32 module.
+    - It first compares the `deviceName` and `deviceAddress` with the list of known devices (defined below). 
+    - If either of it matches, then it sets the value of variable `deviceFound[]` to be `true` for that device.
+    - Then the `deviceRSSI` is compared with the `thresholdRSSI`, which if greater, then the variable `deviceInRange[]` is set to be `true` for that device.
+
+- The following code runs in a loop:
+
+4. A list of Strings is present, named `devicesOfInterest` which stores the identities of devices being monitored. This is initialized using an `HTTP GET` request to the backend implemented in the function `getMonitoredDevices()`.
+5. The BLE Device Scan is started, where **detection of any BLE device triggers the callback function** with logic as defined above in step 3.
+6. The boolean list `deviceInRange[]` is parsed to check for the devices detected by the scan that are in proximity and are added to a list `devicesFound[]`. Also a boolean `anyDeviceInRange` is set accordingly.
+7. We then send the data (any device was detected or not, and the list of devices that were detected) to the Backend using an `HTTP POST` request. The *LED is set to BLUE* for the duration.
+8. To ensure the *Synchronization of Multiple ESP32 modules and for Retained Presence Feature*, we perform an `HTTP GET` request to the backend to get the value of device status and store it in a variable named `currentDeviceStatus`.
+9. We send the value of `currentDeviceStatus` and the id of the last detected device named `deviceId` to the Ubidots. During this interval, the *LED is set to RED*.
+
+### **BACKEND**
+
+We will discuss the various REST API Endpoints offered by the Backend.
+
+The following are the GET request endpoints:
+* `/current_status` : 
+* `/devices_found` :
+* `/ble_mac` :
+* `/data_analysis` :
+
+The following are the POST request endpoints:
+* `/current_status` :
+* `/update_mac_list` :
