@@ -23,6 +23,9 @@ const port = env.PORT
 
 var moment = require('moment');
 
+var devicesOfInterest = []
+var devicesFound = []
+
 app.get('/',(req, res) => {
     res.send('You have reached the backend of Proximity Detection app...\nThe following paths are active: \n1. current_status\n2. ble_mac\n3. data_analysis')
 })
@@ -94,15 +97,17 @@ app.post('/current_status', (req, res) => {
     const date_found = new Date(req_datetime)
     var dayOfWeek = date_found.getDay()
     var currTime = moment().format("HH:mm:ss")
+    devicesFound = req.body["devices_found"]
 
     console.log("Received POST Request for current status.\nPAYLOAD -> is_present: " + req.body["is_present"] + ", n_devices_found: " + req.body["n_devices_found"])
-    console.log("Indices of the Devices Found: " + req.body["devices_found"])
+    console.log("Identities of the Devices Found: " + req.body["devices_found"])
 
     // console.log("DATETIME: " + req_datetime)
     // console.log("DAY OF WEEK: " + dayOfWeek + ", TIME TODAY: " + currTime)
     // console.log("BODY OF POST REQUEST: ", JSON.stringify(req.body))    
     // const received_req = cjson.stringify(req)                // for debugging purposes
 
+    devicesFound = req.body["devices_found"]
     var success = true
     if(req.body["is_present"])
     {
@@ -152,7 +157,7 @@ app.post('/current_status', (req, res) => {
                     console.log("Value of Current Status successfully updated in the Database. Request Successful.")
                 }
             }
-        )      
+        ) 
     }
     
     if(success)
@@ -192,6 +197,19 @@ app.post('/current_status', (req, res) => {
     }
 })
 
+app.get("/devices_found", (req, res) => {
+    var devices_found = [];
+    for(let i = 0 ; i < devicesFound.length ; ++i)
+    {
+        devices_found.push(devicesOfInterest[devicesFound[i]])
+    }
+   
+   res.status(200).send({
+       devices: devices_found,
+       message: "Request executed successfully."
+   })
+})
+
 
 app.get("/ble_mac", (req, res) => {
     db.query(
@@ -210,7 +228,7 @@ app.get("/ble_mac", (req, res) => {
             else
             {
                 console.log("Values of Devices Under Observation obtained from the Database successfully.")
-                var devicesOfInterest = [];
+                devicesOfInterest = [];
                 for(let i = 0 ; i < result.length ; ++i)
                 {
                     devicesOfInterest.push(result[i].mac_address)
