@@ -62,11 +62,25 @@ The section below represents a workflow of the Project:
 We will discuss the various REST API Endpoints offered by the Backend.
 
 The following are the GET request endpoints:
-* `/current_status` : 
-* `/devices_found` :
-* `/ble_mac` :
-* `/data_analysis` :
+
+* `/current_status` : This endpoint is accessed by both the frontend to show the Current Device Status in the *Device Status* page and by the ESP32, before sending to Ubidots. It gets the value of user is present or not from the database table `user_detected`. 
+
+* `/devices_found` : It is accessesed by the frontend while displaying the list of Devices Found in the *Device Status* page and returns the list of identities of devices in range, that was sent by the esp32 device after mapping the numbers to the identities.
+
+* `/ble_mac` : It is accessed by the frontend while displaying the list of devices under observation in the *Monitored Devices* page. It fetches the list of known identities of devices which are known from the database table `ble_mac_addresses`.
+
+* `/data_analysis` : This is accessed by the frontend while displaying the *Data Analysis* page. It gets the user presence data from the database table named `data_analysis`.
 
 The following are the POST request endpoints:
-* `/current_status` :
-* `/update_mac_list` :
+
+* `/current_status` : This endpoint is accessed by the ESP32 to update the current status of the device and the list of found devices. 
+    - When the device is detected by an ESP32 module, the `is_present` is set to `true` in the `user_detected` table and the `last_updated` timestamp is set to the current timestamp. 
+    - When the device is not detected by an ESP32 module, the `last_updated` value is first fetched and checked in the backend. If the diffrence between *last updated timestamp* and the *current timestamp* is greater than 15 seconds, then only the value of `is_present` is set to `false`, else the value is discarded.
+    - This conditional updating of the timestamp ensures *Synchronization between Multiple ESP32 modules* and also gives a time gap of 15 seconds to the user, where if it is not in the proximity of any of the ESP32 modules for any time interval less than or equal to 15 seconds, still the device status would be shown as present. Thus, the feature *Retained Presence* arises.
+
+* `/update_mac_list` : This endpoint is accessed by the frontend when the user enters a new device identity to be monitored in the *Monitored Devices* page. It takes in the new value of device identity as given by the user and inserts it into the database table `ble_mac_addresses`.
+
+### **FRONTEND** 
+
+The following images depict the frontend:
+
