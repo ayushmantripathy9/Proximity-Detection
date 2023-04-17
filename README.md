@@ -86,21 +86,20 @@ The following images depict the frontend:
 
 #### DEVICE STATUS PAGE
 <p>
-The image on the left shows any device of interest in range and the one in the right shows the state when no device of interest is in range. 
+The first image shows any device of interest in range and the next one shows the state when no device of interest is in range. 
 </p>
 
 <br>
 
-<table>
-    <tr>
-        <td> <img align="left" width="100%" height="100%" src="images/device_status_in.png"> </td>
-        <td> <img align="right" width="100%" height="100%" src="images/device_status_out.png">  </td>
-    </tr>
-</table>
+<p align="center"> 
+    <img align="center" width="90%" height="40%" src="images/device_status_in.png">
+</p>
 
+<br> <br>
 
-
-
+<p align="center"> 
+    <img align="center" width="90%" height="40%" src="images/device_status_out.png">
+</p>
 
 <br>
 
@@ -124,9 +123,14 @@ In this page, we show the Data Analysis of the device presence data as collected
 
 <br>
 
-<table>
-    <tr>
-        <td> <img align="left" width="100%" height="100%" src="images/data_analysis_1.png"> </td>
-        <td> <img align="right" width="100%" height="100%" src="images/data_analysis_2.png">  </td>
-    </tr>
-</table>
+<p align="center"> 
+    <img align="center" width="90%" height="40%" src="images/data_analysis_1.png">
+</p>
+
+<br> <br>
+
+<p align="center"> 
+    <img align="center" width="90%" height="40%" src="images/data_analysis_2.png">
+</p>
+
+<br>
